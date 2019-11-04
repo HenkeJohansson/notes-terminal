@@ -5,24 +5,50 @@ PROJ_PATH="$HOME/.notes_haj"
 
 function createNoteFile {
   mkdir -p "$HOME/.notes_haj"
-  touch "$PROJ_PATH/notes.txt"
+  touch "$PROJ_PATH/notes_$(date '+%Y-%m-%d').txt"
 }
 
 function addNote {
 
-  if [[ ! -f "$PROJ_PATH/notes.txt" ]]; then
+  if [[ ! -f "$PROJ_PATH/notes_$(date '+%Y-%m-%d').txt" ]]; then
     createNoteFile
   fi
 
-  (cd "$PROJ_PATH" && echo "$1" >> "$PROJ_PATH/notes.txt")
+  (cd "$PROJ_PATH" && echo "$1" >> "$PROJ_PATH/notes_$(date '+%Y-%m-%d').txt")
 }
 
-# function listNotes {}
+function getNotes {
+  NOTES_AMOUNT=$(wc -l "$1" | awk '{print $1}')
+  if [[ $NOTES_AMOUNT -gt 0 ]]; then
+    LINE_NR=1
+    while read LINE; do
+      echo "☆ ($LINE_NR) $LINE"
+      (( LINE_NR++ ))
+    done < "$1"
+  else
+    echo "Has $NOTES_AMOUNT notes"
+  fi
+}
+
+function listAllNotes {
+  DAYS_OF_NOTES=$(ls -l "$PROJ_PATH" | wc -l)
+
+  if [[ $DAYS_OF_NOTES -gt 0 ]]; then
+    clear
+
+    # divider "☆"
+    for FILE in "$PROJ_PATH/"*.txt; do
+      FILE_NAME=$(basename $FILE | cut -f 2 -d '_' | cut -f 1 -d '.')
+      echo "$FILE_NAME"
+      getNotes $FILE
+    done
+  fi
+}
 
 
 if [[ "$1" == "add" ]]; then
   # $2 = project name
   addNote "$2"
 elif [[ "$1" == "list" ]]; then
-  listNotes
+  listAllNotes
 fi
