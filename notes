@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+PROJ_PATH="$HOME/.notes_haj"
+
+
+function createNoteFile {
+  mkdir -p "$HOME/.notes_haj"
+  touch "$PROJ_PATH/notes.txt"
+}
+
+function addNote {
+
+  if [[ ! -f "$PROJ_PATH/notes.txt" ]]; then
+    createNoteFile
+  fi
+
+  (cd "$PROJ_PATH" && echo "$1" >> "$PROJ_PATH/notes.txt")
+}
+
+# function listNotes {}
+
+
+if [[ "$1" == "add" ]]; then
+  # $2 = project name
+  addNote "$2"
+elif [[ "$1" == "list" ]]; then
+  listNotes
+fi
