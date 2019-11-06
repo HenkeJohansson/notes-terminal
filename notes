@@ -30,6 +30,24 @@ function getNotes {
   fi
 }
 
+function listNotes {
+  if [[ -z "$1" ]]; then
+    listAllNotes
+  else
+    listNotesFromDay "$1"
+  fi
+}
+
+function listNotesFromDay {
+
+  FILE="$PROJ_PATH/notes_$1.txt"
+  if [[ -f "$FILE" ]]; then
+    getNotes "$FILE"
+  else
+    echo "No notes found for $1"
+  fi
+}
+
 function listAllNotes {
   DAYS_OF_NOTES=$(ls -l "$PROJ_PATH" | wc -l)
 
@@ -45,10 +63,16 @@ function listAllNotes {
   fi
 }
 
+function displayInstructions {
+  echo "☆ Add note: note add <note>"
+  echo "☆ List all notes: note list"
+  echo "☆ List all notes from specific day: note list <date> (YYYY-MM-DD)"
+}
+
 
 if [[ "$1" == "add" ]]; then
   # $2 = project name
   addNote "$2"
 elif [[ "$1" == "list" ]]; then
-  listAllNotes
+  listNotes "$2"
 fi
