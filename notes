@@ -63,10 +63,18 @@ function listAllNotes {
   fi
 }
 
+function listDates {
+  for FILE in "$PROJ_PATH"/*.txt; do
+    FILE_NAME=$(basename $FILE | cut -f 2 -d '_' | cut -f 1 -d '.')
+    echo "$FILE_NAME"
+  done
+}
+
 function displayInstructions {
   echo "☆ Add note: note add <note>"
   echo "☆ List all notes: note list"
   echo "☆ List all notes from specific day: note list <date> (YYYY-MM-DD)"
+  echo "☆ List all dates that has notes: note dates"
 }
 
 
@@ -75,4 +83,6 @@ if [[ "$1" == "add" ]]; then
   addNote "$2"
 elif [[ "$1" == "list" ]]; then
   listNotes "$2"
+elif [[ "$1" == "dates" ]]; then
+  listDates
 fi
